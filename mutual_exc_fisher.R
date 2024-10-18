@@ -17,9 +17,9 @@ library(ggplot2)
 #View(duplicated_col_ex[which(duplicated_col_ex[[1]] != duplicated_col_ex[[2]]),]) # discrepancy in 3 genes in this example
 
 
-# remove duplicates because it affects filtering (due to overrepresentation in the row sum)
+# remove duplicates because it affects filtering (due to over representation in the row sum)
 
-maf_binary = fread("Desktop/r2/mutual_exclusivity/R_approach/gbm_binary.tsv")
+maf_binary = fread("../R_approach/gbm_binary.tsv")
 
 notdup_col_pos = which(!duplicated(colnames(maf_binary)))
 
@@ -89,6 +89,7 @@ look_up_table = list()
 mutual_exclusivity_test <- function(gene1, gene2, transposed_df, look_up_table) {
   # Create a contingency table
   contingency_table <- table(transposed_df[,gene1], transposed_df[,gene2])
+  print(contingency_table)
   
   table_values_str = paste(contingency_table, collapse = "-") # first number x axis - second number y axis. number order: t00 - t01 - t10 - t11
   
@@ -106,11 +107,13 @@ mutual_exclusivity_test <- function(gene1, gene2, transposed_df, look_up_table) 
 
 # Example: Testing for mutual exclusivity between Gene 1 and Gene 2
 
-#gene1 = "PTCH1"
-#gene2 = "ZNF81"
-#result <- mutual_exclusivity_test(gene1, gene2, maf_binary_t, look_up_table)
+gene1 = "PTCH1"
+gene2 = "ZNF81"
 
-#look_up_table = result$look_up_table
+maf_binary_t[,gene2][maf_binary_t[,gene2] == 1] <- 2
+result <- mutual_exclusivity_test(gene1, gene2, maf_binary_t, look_up_table)
+
+look_up_table = result$look_up_table
 
 # View the result
 #print(result$p_value)

@@ -14,16 +14,16 @@
 #'
 #' # perform function `maf2matrix`.
 #' mutmatrix.example<-maf2matrix(maf)
-maf2matrix <- function(maffile,
+maf2matrix <- function(maf,
                        percent = 0.01,
                        nonsynonymous = TRUE) {
-  maf <-
-    read.delim(
-      maffile,
-      header = TRUE,
-      comment.char = '#',
-      stringsAsFactors = FALSE
-    )
+  #maf <-
+  #  read.delim(
+  #    maffile,
+  #    header = TRUE,
+  #    comment.char = '#',
+  #    stringsAsFactors = FALSE
+  #  )
   mafneed <-
     maf[, c("Hugo_Symbol",
             "Tumor_Sample_Barcode",
@@ -56,7 +56,10 @@ maf2matrix <- function(maffile,
     sample_one <- mafselect$Tumor_Sample_Barcode[i]
     mafselectmatrix[gene_one, sample_one] <- 1
   }
-  sample_id <- substr(sample_id, 1, 15)
+  #sample_id <- substr(sample_id, 1, 15)  # This is subsetting the TCGA patient tag from the full sample barcode. 
+  #When there are two samples from a single patient, this creates duplicate columns in data.frame format which is solved by adding suffices such as .1, .2, .3.
+  # In this case, it may not be possible to contrast between samples from a patient.
+  # Keep full barcode.
   sample_id <- gsub("-", ".", sample_id)
   colnames(mafselectmatrix) <- sample_id
   cutmutnum = ceiling(ncol(mafselectmatrix) * percent)
