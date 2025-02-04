@@ -35,8 +35,12 @@ data = GDCprepare(query,
 
 # Load GDC prepare file as 'data'
 
-load('GDCprepare/TCGACOAD_20241030_GDCprepare.Rdata')
+data = readRDS(file = "GDCprepare/TCGACOAD_20241030_GDCprepare_PolyphenSIFTfiltered.Rdata")
+data_coad = data
+data = readRDS(file = "GDCprepare/TCGAREAD_20241030_GDCprepare_PolyphenSIFTfiltered.Rdata")
+data_read = data
 
+data = rbind(data_coad, data_read)
 # Check metadata
 #TODO: Problem with receiving the data in summarizedExperiment format. Without it, clinical data is not accessible with colData function.
 #colData(data)
@@ -48,7 +52,8 @@ metadata = as.data.frame(colDataPrepare(barcode_list_for_metadata))
 metadata$barcode = gsub("-", ".", metadata$barcode) # using hyphens or dash sign (in general special characters) are not allowed in variable names. 
 rownames(metadata) = metadata$barcode
 # Write metadata
-saveRDS(metadata, file = gsub("-", "", paste0(query$project,'_',Sys.Date(), "_metadata.rds")))
+#saveRDS(metadata, file = gsub("-", "", paste0(query$project,'_',Sys.Date(), "_metadata.rds")))
+saveRDS(metadata, file = paste0("TCGACOADREAD_20241030_PolyphenSIFTfiltered", Sys.Date(), "_metadata.rds"))
 
 # Read maf file
 maf = data %>% maftools::read.maf()
@@ -61,8 +66,10 @@ data.frame(getSampleSummary(maf),
 plotmafSummary(maf = maf, rmOutlier = TRUE, addStat = 'median', dashboard = TRUE)
 
 # Convert maf to binary matrix
-maf_binary = maf2matrix(data)
+maf_binary = maf2matrix(data, percent = 0, nonsynonymous = TRUE)
 
 # save as tsv
 #fwrite(maf_binary, gsub("-", "", paste0("binarymatrix/",query$project, Sys.Date(), "_binarymat.tsv")), sep = "\t", row.names = TRUE)
+#fwrite(maf_binary, gsub("-", "", paste0("binarymatrix/","TCGACOADREAD_20241030_Polyphenfiltered", Sys.Date(), "_binarymat.tsv")), sep = "\t", row.names = TRUE)
+#fwrite(maf_binary, gsub("-", "", paste0("binarymatrix/","TCGACOADREAD_20241030_PolyPhenSIFTfiltered", Sys.Date(), "_binarymat.tsv")), sep = "\t", row.names = TRUE)
 
