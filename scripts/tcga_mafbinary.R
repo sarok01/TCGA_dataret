@@ -34,7 +34,6 @@ data = GDCprepare(query,
 
 
 # Load GDC prepare file as 'data'
-
 data = readRDS(file = "GDCprepare/TCGACOAD_20241030_GDCprepare_PolyphenSIFTfiltered.Rdata")
 data_coad = data
 data = readRDS(file = "GDCprepare/TCGAREAD_20241030_GDCprepare_PolyphenSIFTfiltered.Rdata")
